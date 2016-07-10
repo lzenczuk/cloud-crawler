@@ -1,6 +1,7 @@
 package com.github.lzenczuk.crawler.httpclient;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,7 +12,7 @@ public class HttpCrawlerRedirection {
     private URL redirectUrl;
     private int responseCode;
     private String responseMessage;
-    private Map<String, String> headers;
+    private Map<String, List<String>> headers;
     private String content;
 
     public HttpCrawlerRedirection() {
@@ -56,11 +57,11 @@ public class HttpCrawlerRedirection {
         this.responseMessage = responseMessage;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
+    public void setHeaders(Map<String, List<String>> headers) {
         this.headers = headers;
     }
 

@@ -11,5 +11,16 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    compile 'org.apache.httpcomponents:httpasyncclient:4.1.1'
+    compile 'commons-io:commons-io:2.5'
+
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'org.apache.logging.log4j:log4j-core:2.5'
+    compile 'org.apache.logging.log4j:log4j-api:2.5'
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.5'
+
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.mockito:mockito-all:1.10.19'
+    testCompile 'org.mock-server:mockserver-netty:3.10.4'
 }

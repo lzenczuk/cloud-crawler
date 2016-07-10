@@ -11,7 +11,7 @@ public class HttpCrawlerResponse {
     private URL url;
     private int responseCode;
     private String responseMessage;
-    private Map<String, String> headers;
+    private Map<String, List<String>> headers;
 
     private List<HttpCrawlerRedirection> redirectionList;
 
@@ -22,11 +22,8 @@ public class HttpCrawlerResponse {
     public HttpCrawlerResponse() {
     }
 
-    public HttpCrawlerResponse(URL url, int responseCode, String responseMessage, Map<String, String> headers) {
+    public HttpCrawlerResponse(URL url) {
         this.url = url;
-        this.responseCode = responseCode;
-        this.responseMessage = responseMessage;
-        this.headers = headers;
     }
 
     public HttpCrawlerResponse(HttpCrawlerErrorCode errorCode, String errorMessage) {
@@ -57,11 +54,11 @@ public class HttpCrawlerResponse {
         this.responseMessage = responseMessage;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
+    public void setHeaders(Map<String, List<String>> headers) {
         this.headers = headers;
     }
 
