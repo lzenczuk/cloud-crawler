@@ -42,14 +42,14 @@ public class ApacheHttpCrawlerFutureCallback implements FutureCallback<HttpRespo
     @Override
     public void completed(HttpResponse response) {
 
-        logger.debug("Complete: " + response);
+        logger.info("Complete: " + response);
 
         //https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
         if (ApacheHttpCrawlerUtil.isRedirection(response) && httpCrawlerRequest.isRedirect()) {
-            logger.debug("Redirect");
+            logger.info("Redirect");
             redirect(response);
         } else {
-            logger.debug("No redirection. Updating response.");
+            logger.info("No redirection. Updating response.");
             updateResponse(response);
             this.responseCompletableFuture.complete(this.httpCrawlerResponse);
         }
@@ -57,7 +57,7 @@ public class ApacheHttpCrawlerFutureCallback implements FutureCallback<HttpRespo
 
     @Override
     public void failed(Exception e) {
-        logger.debug("Failed: "+e.getClass().toString());
+        logger.info("Failed: "+e.getClass().toString());
 
         if(e instanceof java.net.SocketTimeoutException){
             this.httpCrawlerResponse.setCrawlerError(new HttpCrawlerError(HttpCrawlerErrorCode.REQUEST_TIMEOUT_ERROR, e.getMessage()));
@@ -72,14 +72,14 @@ public class ApacheHttpCrawlerFutureCallback implements FutureCallback<HttpRespo
 
     @Override
     public void cancelled() {
-        logger.debug("Canceled");
+        logger.info("Canceled");
 
         this.httpCrawlerResponse.setCrawlerError(new HttpCrawlerError(HttpCrawlerErrorCode.REQUEST_CANCELED_ERROR, "Request canceled by http client"));
         this.responseCompletableFuture.complete(this.httpCrawlerResponse);
     }
 
     private void redirect(HttpResponse response) {
-        logger.debug("Redirecting");
+        logger.info("Redirecting");
         Optional<String> optionalLocation = ApacheHttpCrawlerUtil.getLocation(response, request);
 
         if (optionalLocation.isPresent()) {
@@ -105,7 +105,7 @@ public class ApacheHttpCrawlerFutureCallback implements FutureCallback<HttpRespo
                 httpCrawlerRedirection.setContent(IOUtils.toString(response.getEntity().getContent(), Charset.defaultCharset()));
 
                 HttpUriRequest request = ApacheHttpCrawlerRequestFactory.fromApacheHttpRedirectResponse(response, this.httpCrawlerRequest, redirection);
-                logger.debug("Calling redirected url: "+request);
+                logger.info("Calling redirected url: "+request);
                 this.httpAsyncClient.execute(request, this);
 
             } catch (MalformedURLException e) {

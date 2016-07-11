@@ -55,6 +55,8 @@ public class ApacheHttpCrawlerClient implements HttpCrawlerClient{
                 .build();
 
         httpAsyncClient.start();
+
+        logger.info("Asyc apache http client started");
     }
 
     public ApacheHttpCrawlerClient(CloseableHttpAsyncClient httpAsyncClient) {
@@ -63,6 +65,8 @@ public class ApacheHttpCrawlerClient implements HttpCrawlerClient{
 
     @Override
     public CompletableFuture<HttpCrawlerResponse> process(HttpCrawlerRequest httpCrawlerRequest) {
+
+        logger.info("Processing request: "+httpCrawlerRequest.getUrl());
 
         CompletableFuture<HttpCrawlerResponse> responseCompletableFuture = new CompletableFuture<>();
 
@@ -75,6 +79,7 @@ public class ApacheHttpCrawlerClient implements HttpCrawlerClient{
             return responseCompletableFuture;
         }
 
+        logger.info("Executing request: "+request);
         httpAsyncClient.execute(request,new ApacheHttpCrawlerFutureCallback(httpAsyncClient, request, httpCrawlerRequest, responseCompletableFuture));
 
         return responseCompletableFuture;

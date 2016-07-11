@@ -25,18 +25,22 @@ public class Main {
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(
-                () -> iconomiScenario.execute()
+                () -> {
+
+                    logger.info("Running scenario iconomi.");
+                    iconomiScenario.execute()
                         .whenComplete((scenarioExecutionResult, throwable) -> {
-                            if(throwable!=null){
+                            if (throwable != null) {
                                 logger.error("Throwable. This shouldn't happen. ", throwable);
                             }
 
-                            if(scenarioExecutionResult.isSuccess()){
-                                logger.debug("Execution successful");
-                            }else{
-                                logger.error("Execution error: "+scenarioExecutionResult.getErrorMessage());
+                            if (scenarioExecutionResult.isSuccess()) {
+                                logger.info("Scenario iconomi executed.");
+                            } else {
+                                logger.error("Execution error: " + scenarioExecutionResult.getErrorMessage());
                             }
-                        }),
+                        });
+                },
                 0,
                 5,
                 TimeUnit.MINUTES

@@ -1,7 +1,14 @@
-group 'com.github.lzenczuk.crawler'
-version '1.0-SNAPSHOT'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+    }
+}
 
 apply plugin: 'java'
+apply plugin: 'docker'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -25,3 +32,39 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.10.19'
     testCompile 'org.mock-server:mockserver-netty:3.10.4'
 }
+
+version = '0.1.0'
+
+jar {
+    baseName = 'cloud-crawler'
+    version =  version
+    manifest {
+        attributes 'Main-Class': 'com.github.lzenczuk.crawler.Main'
+    }
+}
+
+task fatJar(type: Jar, dependsOn: test) {
+    manifest {
+        attributes 'Main-Class': 'com.github.lzenczuk.crawler.Main'
+    }
+    baseName = jar.baseName + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task buildDocker(type: Docker, dependsOn: fatJar) {
+    push = false
+
+    tag = 'lzenczuk/cloud-crawler'
+    applicationName = jar.baseName
+    tagVersion = jar.version
+    baseImage = 'frolvlad/alpine-oraclejdk8:slim'
+
+    addFile{
+        from fatJar
+        rename {'app.jar'}
+    }
+    runCommand("sh -c 'touch /app.jar'")
+    entryPoint(["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"])
+}
+

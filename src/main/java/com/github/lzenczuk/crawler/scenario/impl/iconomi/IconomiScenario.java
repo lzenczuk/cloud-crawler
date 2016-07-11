@@ -50,8 +50,6 @@ public class IconomiScenario implements Scenario {
                 resultFuture.complete(new ScenarioExecutionResult(httpCrawlerResponse.getCrawlerError().getErrorMessage()));
             }
 
-            logger.debug("real url: "+httpCrawlerResponse.getUrl());
-
             if(httpCrawlerResponse.getContent()!=null){
                 Document document = Jsoup.parse(httpCrawlerResponse.getContent());
 
