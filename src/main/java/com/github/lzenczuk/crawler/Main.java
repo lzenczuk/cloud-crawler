@@ -18,8 +18,18 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws InterruptedException {
+
+        String outputFilePath = "iconomi_prices.csv";
+
+        String iconomiStorageFolder = System.getenv("iconomi_storage_folder");
+        if(iconomiStorageFolder!=null){
+            outputFilePath = iconomiStorageFolder+"/iconomi_prices.csv";
+        }
+
+        logger.info("Iconomi output data will be store in "+outputFilePath);
+
         ApacheHttpCrawlerClient apacheHttpCrawlerClient = new ApacheHttpCrawlerClient();
-        IconomiPriceStorage iconomiPriceStorage = new IconomiPriceStorage("/data_volume/iconomi_prices.csv");
+        IconomiPriceStorage iconomiPriceStorage = new IconomiPriceStorage(outputFilePath);
 
         IconomiScenario iconomiScenario = new IconomiScenario(apacheHttpCrawlerClient, iconomiPriceStorage);
 

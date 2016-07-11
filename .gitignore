@@ -54,4 +54,6 @@ fabric.properties
 hs_err_pid*
 
 out.csv
+iconomi_prices.csv
+
 
