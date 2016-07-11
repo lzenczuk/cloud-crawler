@@ -16,6 +16,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -78,5 +79,16 @@ public class ApacheHttpCrawlerClient implements HttpCrawlerClient{
 
         return responseCompletableFuture;
 
+    }
+
+    @Override
+    public void stop() {
+        if(httpAsyncClient!=null){
+            try {
+                httpAsyncClient.close();
+            } catch (IOException e) {
+                logger.error("Error closing apache http client. "+e.getMessage());
+            }
+        }
     }
 }

@@ -7,4 +7,5 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface HttpCrawlerClient {
     CompletableFuture<HttpCrawlerResponse> process(HttpCrawlerRequest httpCrawlerRequest);
+    void stop();
 }

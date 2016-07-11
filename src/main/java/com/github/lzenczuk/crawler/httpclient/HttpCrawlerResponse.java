@@ -86,6 +86,10 @@ public class HttpCrawlerResponse {
         this.crawlerError = crawlerError;
     }
 
+    public boolean isError() {
+        return crawlerError!=null;
+    }
+
     @Override
     public String toString() {
         return "HttpCrawlerResponse{" +
