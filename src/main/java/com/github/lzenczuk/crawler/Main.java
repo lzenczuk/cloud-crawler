@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         ApacheHttpCrawlerClient apacheHttpCrawlerClient = new ApacheHttpCrawlerClient();
-        IconomiPriceStorage iconomiPriceStorage = new IconomiPriceStorage("out.csv");
+        IconomiPriceStorage iconomiPriceStorage = new IconomiPriceStorage("/data_volume/iconomi_prices.csv");
 
         IconomiScenario iconomiScenario = new IconomiScenario(apacheHttpCrawlerClient, iconomiPriceStorage);
 
