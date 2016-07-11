@@ -1,6 +1,8 @@
 package com.github.lzenczuk.crawler;
 
 import com.github.lzenczuk.crawler.httpclient.impl.apache.ApacheHttpCrawlerClient;
+import com.github.lzenczuk.crawler.scenario.impl.coindesk.CoinDeskPriceStorage;
+import com.github.lzenczuk.crawler.scenario.impl.coindesk.CoinDeskScenario;
 import com.github.lzenczuk.crawler.scenario.impl.iconomi.IconomiPriceStorage;
 import com.github.lzenczuk.crawler.scenario.impl.iconomi.IconomiScenario;
 import org.apache.logging.log4j.LogManager;
@@ -19,19 +21,23 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 
-        String outputFilePath = "iconomi_prices.csv";
+        String iconomiOutputFilePath = "iconomi_prices.csv";
+        String coindeskOutputFilePath = "coindesk_prices.csv";
 
-        String iconomiStorageFolder = System.getenv("iconomi_storage_folder");
-        if(iconomiStorageFolder!=null){
-            outputFilePath = iconomiStorageFolder+"/iconomi_prices.csv";
+        String storageFolder = System.getenv("storage_folder");
+        if(storageFolder!=null){
+            iconomiOutputFilePath = storageFolder+"/"+iconomiOutputFilePath;
+            coindeskOutputFilePath = storageFolder+"/"+coindeskOutputFilePath;
         }
 
-        logger.info("Iconomi output data will be store in "+outputFilePath);
+        logger.info("Iconomi output data will be store in "+iconomiOutputFilePath);
 
         ApacheHttpCrawlerClient apacheHttpCrawlerClient = new ApacheHttpCrawlerClient();
-        IconomiPriceStorage iconomiPriceStorage = new IconomiPriceStorage(outputFilePath);
+        IconomiPriceStorage iconomiPriceStorage = new IconomiPriceStorage(iconomiOutputFilePath);
+        CoinDeskPriceStorage coinDeskPriceStorage = new CoinDeskPriceStorage(coindeskOutputFilePath);
 
         IconomiScenario iconomiScenario = new IconomiScenario(apacheHttpCrawlerClient, iconomiPriceStorage);
+        CoinDeskScenario coinDeskScenario = new CoinDeskScenario(apacheHttpCrawlerClient, coinDeskPriceStorage);
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(
@@ -50,6 +56,21 @@ public class Main {
                                 logger.error("Execution error: " + scenarioExecutionResult.getErrorMessage());
                             }
                         });
+
+
+                    logger.info("Running scenario coindesk.");
+                    coinDeskScenario.execute()
+                            .whenComplete((scenarioExecutionResult, throwable) -> {
+                                if (throwable != null) {
+                                    logger.error("Throwable. This shouldn't happen. ", throwable);
+                                }
+
+                                if (scenarioExecutionResult.isSuccess()) {
+                                    logger.info("Scenario coindesk executed.");
+                                } else {
+                                    logger.error("Execution error: " + scenarioExecutionResult.getErrorMessage());
+                                }
+                            });
                 },
                 0,
                 5,

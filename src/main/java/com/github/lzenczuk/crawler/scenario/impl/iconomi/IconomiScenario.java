@@ -80,7 +80,7 @@ public class IconomiScenario implements Scenario {
                     resultFuture.complete(new ScenarioExecutionResult("Error parsing price sub string: "+priceStringArray[3]+"; "+e.getMessage()));
                 } catch (IconomiStorageException e) {
                     logger.error("Error storing result price."+e.getMessage());
-                    resultFuture.complete(new ScenarioExecutionResult("Error parsing price sub string: "+priceStringArray[3]+"; "+e.getMessage()));
+                    resultFuture.complete(new ScenarioExecutionResult("Error storing price:"+priceStringArray[3]+"; "+e.getMessage()));
                 }
 
                 resultFuture.complete(new ScenarioExecutionResult());
