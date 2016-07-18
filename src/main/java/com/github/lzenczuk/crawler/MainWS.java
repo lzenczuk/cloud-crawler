@@ -1,14 +1,14 @@
 package com.github.lzenczuk.crawler;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.MessageMapper;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.Message;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.RawMessageMapper;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -25,7 +25,7 @@ public class MainWS {
 
         AtomicReference<RemoteEndpoint.Basic> basicAtomicReference = new AtomicReference<>(null);
 
-        MessageMapper messageMapper = new MessageMapper();
+        RawMessageMapper rawMessageMapper = new RawMessageMapper();
 
         ClientManager client = ClientManager.createClient();
         client.connectToServer(new Endpoint() {
@@ -44,7 +44,8 @@ public class MainWS {
                                                //System.out.println("Receive message: " + message);
 
                                                try{
-                                                messageMapper.processMessage(message);
+                                                   List<Message> messages = rawMessageMapper.processMessage(message);
+                                                   messages.forEach(message1 -> System.out.println(message1));
                                                } catch (IOException e) {
                                                    e.printStackTrace();
                                                }
@@ -183,6 +184,8 @@ public class MainWS {
 
          */
         remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":148}");
+        //remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":149}");
+        //remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":1002}");
         //remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":\"BTC_ETH\"}");
 
         // ?
