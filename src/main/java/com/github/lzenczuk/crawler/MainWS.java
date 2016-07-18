@@ -1,5 +1,12 @@
 package com.github.lzenczuk.crawler;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import com.github.lzenczuk.crawler.scenario.impl.poloniex.Message;
 import com.github.lzenczuk.crawler.scenario.impl.poloniex.RawMessageMapper;
 import org.glassfish.tyrus.client.ClientManager;
@@ -27,6 +34,14 @@ public class MainWS {
 
         RawMessageMapper rawMessageMapper = new RawMessageMapper();
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        StdTypeResolverBuilder stdTypeResolverBuilder = new StdTypeResolverBuilder();
+        stdTypeResolverBuilder.init(JsonTypeInfo.Id.CLASS, null);
+        stdTypeResolverBuilder.inclusion(JsonTypeInfo.As.PROPERTY);
+
+        objectMapper.setDefaultTyping(stdTypeResolverBuilder);
+
         ClientManager client = ClientManager.createClient();
         client.connectToServer(new Endpoint() {
                                    @Override
@@ -45,7 +60,14 @@ public class MainWS {
 
                                                try{
                                                    List<Message> messages = rawMessageMapper.processMessage(message);
-                                                   messages.forEach(message1 -> System.out.println(message1));
+                                                   messages.forEach(message1 -> {
+                                                       try {
+                                                           System.out.println(message1);
+                                                           System.out.println(objectMapper.writeValueAsString(message1));
+                                                       } catch (JsonProcessingException e) {
+                                                           System.out.println("------------> mapping error");
+                                                       }
+                                                   });
                                                } catch (IOException e) {
                                                    e.printStackTrace();
                                                }
@@ -184,7 +206,8 @@ public class MainWS {
 
          */
         remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":148}");
-        //remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":149}");
+        remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":149}");
+        remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":150}");
         //remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":1002}");
         //remoteEndpoint.sendText("{\"command\":\"subscribe\",\"channel\":\"BTC_ETH\"}");
 
