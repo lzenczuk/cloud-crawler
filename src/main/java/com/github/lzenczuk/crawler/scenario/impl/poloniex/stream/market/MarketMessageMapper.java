@@ -1,8 +1,8 @@
-package com.github.lzenczuk.crawler.scenario.impl.poloniex.market;
+package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.market;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.Message;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.MessageMapper;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.Message;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.MessageMapper;
 
 import java.math.BigDecimal;
 import java.util.Date;

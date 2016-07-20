@@ -1,4 +1,4 @@
-package com.github.lzenczuk.crawler.scenario.impl.poloniex;
+package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream;
 
 /**
  * Created by dev on 14/07/16.

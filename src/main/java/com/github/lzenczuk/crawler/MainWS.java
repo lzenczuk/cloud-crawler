@@ -2,13 +2,10 @@ package com.github.lzenczuk.crawler;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.Message;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.RawMessageMapper;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.Message;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.RawMessageMapper;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;

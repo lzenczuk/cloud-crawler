@@ -1,6 +1,6 @@
-package com.github.lzenczuk.crawler.scenario.impl.poloniex.hartbit;
+package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.hartbit;
 
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.Message;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.Message;
 
 import java.util.Date;
 

@@ -1,7 +1,6 @@
-package com.github.lzenczuk.crawler.scenario.impl.poloniex;
+package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.Message;
 
 import java.util.List;
 

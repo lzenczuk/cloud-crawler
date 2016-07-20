@@ -1,10 +1,10 @@
-package com.github.lzenczuk.crawler.scenario.impl.poloniex;
+package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.hartbit.HartBitMessageMapper;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.market.MarketMessageMapper;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.ticker.TickerMessageMapper;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.hartbit.HartBitMessageMapper;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.market.MarketMessageMapper;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.ticker.TickerMessageMapper;
 
 import java.io.IOException;
 import java.util.Collections;

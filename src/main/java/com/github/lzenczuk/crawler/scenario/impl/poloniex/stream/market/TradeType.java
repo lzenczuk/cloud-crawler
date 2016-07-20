@@ -1,4 +1,4 @@
-package com.github.lzenczuk.crawler.scenario.impl.poloniex.market;
+package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.market;
 
 /**
  * Created by dev on 14/07/16.

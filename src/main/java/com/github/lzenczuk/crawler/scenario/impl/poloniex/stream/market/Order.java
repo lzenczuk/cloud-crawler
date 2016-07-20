@@ -1,6 +1,6 @@
-package com.github.lzenczuk.crawler.scenario.impl.poloniex.market;
+package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.market;
 
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.Message;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.Message;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -8,26 +8,24 @@ import java.util.Date;
 /**
  * Created by dev on 14/07/16.
  */
-public class Trade implements Message{
+public class Order implements Message {
     private long marketId;
     private long messageId;
-    private long tradeId;
-    private TradeType tradeType;
+    private OrderType orderType;
     private BigDecimal rate;
     private BigDecimal amount;
-    private Date date;
+    private Date receiveDate;
 
-    public Trade() {
+    public Order() {
     }
 
-    public Trade(long marketId, long messageId, long tradeId, TradeType tradeType, String rate, String amount, Date date) {
+    public Order(long marketId, long messageId, OrderType orderType, String rate, String amount, Date receiveDate) {
         this.marketId = marketId;
         this.messageId = messageId;
-        this.tradeId = tradeId;
-        this.tradeType = tradeType;
+        this.orderType = orderType;
         this.rate = new BigDecimal(rate);
         this.amount = new BigDecimal(amount);
-        this.date = date;
+        this.receiveDate = receiveDate;
     }
 
     public long getMarketId() {
@@ -46,20 +44,12 @@ public class Trade implements Message{
         this.messageId = messageId;
     }
 
-    public long getTradeId() {
-        return tradeId;
+    public OrderType getOrderType() {
+        return orderType;
     }
 
-    public void setTradeId(long tradeId) {
-        this.tradeId = tradeId;
-    }
-
-    public TradeType getTradeType() {
-        return tradeType;
-    }
-
-    public void setTradeType(TradeType tradeType) {
-        this.tradeType = tradeType;
+    public void setOrderType(OrderType orderType) {
+        this.orderType = orderType;
     }
 
     public BigDecimal getRate() {
@@ -78,24 +68,23 @@ public class Trade implements Message{
         this.amount = amount;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getReceiveDate() {
+        return receiveDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setReceiveDate(Date receiveDate) {
+        this.receiveDate = receiveDate;
     }
 
     @Override
     public String toString() {
-        return "Trade{" +
+        return "Order{" +
                 "marketId=" + marketId +
                 ", messageId=" + messageId +
-                ", tradeId=" + tradeId +
-                ", tradeType=" + tradeType +
+                ", orderType=" + orderType +
                 ", rate=" + rate +
                 ", amount=" + amount +
-                ", date=" + date +
+                ", receiveDate=" + receiveDate +
                 '}';
     }
 }

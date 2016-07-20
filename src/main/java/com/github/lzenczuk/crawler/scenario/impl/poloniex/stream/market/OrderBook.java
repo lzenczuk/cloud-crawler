@@ -1,6 +1,6 @@
-package com.github.lzenczuk.crawler.scenario.impl.poloniex.market;
+package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.market;
 
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.Message;
+import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.Message;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
