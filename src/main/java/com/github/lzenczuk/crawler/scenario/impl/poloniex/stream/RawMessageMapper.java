@@ -37,7 +37,9 @@ public class RawMessageMapper {
                 }
                 return tickerMessageMapper.processMessage(jsonNode, message);
             }else if(MessageType.HART_BEAT==messageType){
-                return hartBitMessageMapper.processMessage(jsonNode, message);
+                // skip hart bit messages
+                // return hartBitMessageMapper.processMessage(jsonNode, message);
+                return Collections.emptyList();
             }else{
                 return Collections.singletonList(
                         new ErrorMessage(

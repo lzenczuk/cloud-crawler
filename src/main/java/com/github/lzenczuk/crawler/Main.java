@@ -12,6 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by dev on 11/07/16.
@@ -24,13 +27,15 @@ public class Main {
 
         ApacheHttpCrawlerClient apacheHttpCrawlerClient = new ApacheHttpCrawlerClient();
 
-        /*String iconomiOutputFilePath = "iconomi_prices.csv";
+        String iconomiOutputFilePath = "iconomi_prices.csv";
         String coindeskOutputFilePath = "coindesk_prices.csv";
+        String poloniexOutputFilePath = "poloniex.json.gz";
 
         String storageFolder = System.getenv("storage_folder");
         if(storageFolder!=null){
             iconomiOutputFilePath = storageFolder+"/"+iconomiOutputFilePath;
             coindeskOutputFilePath = storageFolder+"/"+coindeskOutputFilePath;
+            poloniexOutputFilePath = storageFolder+"/"+poloniexOutputFilePath;
         }
 
         logger.info("Iconomi output data will be store in "+iconomiOutputFilePath);
@@ -38,9 +43,37 @@ public class Main {
         CoinDeskPriceStorage coinDeskPriceStorage = new CoinDeskPriceStorage(coindeskOutputFilePath);
 
         IconomiScenario iconomiScenario = new IconomiScenario(apacheHttpCrawlerClient, iconomiPriceStorage);
-        CoinDeskScenario coinDeskScenario = new CoinDeskScenario(apacheHttpCrawlerClient, coinDeskPriceStorage);*/
+        CoinDeskScenario coinDeskScenario = new CoinDeskScenario(apacheHttpCrawlerClient, coinDeskPriceStorage);
 
-        /*ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        FileMessageConsumerImpl poloniexFileMessageConsumer = new FileMessageConsumerImpl(poloniexOutputFilePath);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                if(poloniexFileMessageConsumer!=null) {
+                    poloniexFileMessageConsumer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
+
+        new Thread(() -> {
+            PoloniexScenario poloniexScenario = new PoloniexScenario(apacheHttpCrawlerClient, poloniexFileMessageConsumer);
+            poloniexScenario.execute().whenComplete((scenarioExecutionResult, throwable) -> {
+                logger.info("Completed: "+scenarioExecutionResult);
+                apacheHttpCrawlerClient.stop();
+
+                if(poloniexFileMessageConsumer!=null){
+                    try {
+                        poloniexFileMessageConsumer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }).start();
+
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(
                 () -> {
 
@@ -76,40 +109,6 @@ public class Main {
                 0,
                 5,
                 TimeUnit.MINUTES
-        );*/
-
-        String outputFilePath = "poloniex.json.gz";
-
-        String storageFolder = System.getenv("storage_folder");
-        if(storageFolder!=null){
-            outputFilePath = storageFolder+"/"+outputFilePath;
-        }
-
-        FileMessageConsumerImpl fileMessageConsumer = new FileMessageConsumerImpl(outputFilePath);
-
-        PoloniexScenario poloniexScenario = new PoloniexScenario(apacheHttpCrawlerClient, fileMessageConsumer);
-        poloniexScenario.execute().whenComplete((scenarioExecutionResult, throwable) -> {
-            logger.info("Completed: "+scenarioExecutionResult);
-            apacheHttpCrawlerClient.stop();
-
-            if(fileMessageConsumer!=null){
-                try {
-                    fileMessageConsumer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                if(fileMessageConsumer!=null) {
-                    System.out.println("-------------------> gz file closed");
-                    fileMessageConsumer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }));
+        );
     }
 }

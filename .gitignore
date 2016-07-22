@@ -56,5 +56,6 @@ hs_err_pid*
 out.csv
 iconomi_prices.csv
 coindesk_prices.csv
+poloniex.json
 poloniex.json.gz
 

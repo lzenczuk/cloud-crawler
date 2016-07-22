@@ -1,6 +1,8 @@
 package com.github.lzenczuk.crawler.scenario.impl.poloniex.stream;
 
 import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.consumer.MessageConsumer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
@@ -10,12 +12,15 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by dev on 19/07/16.
  */
 public class PoloniexWsClient {
+
+    private static final Logger logger = LogManager.getLogger(PoloniexWsClient.class);
 
     private AtomicReference<RemoteEndpoint.Basic> endpointReference;
     private AtomicReference<Session> sessionReference;
@@ -47,7 +52,7 @@ public class PoloniexWsClient {
                                    @Override
                                    public void onOpen(Session session, EndpointConfig config) {
 
-                                       System.out.println("Open session");
+                                       logger.info("WS session to poloniex opened");
 
                                        sessionReference.set(session);
                                        endpointReference.set(session.getBasicRemote());
@@ -55,6 +60,9 @@ public class PoloniexWsClient {
                                        initLatch.countDown();
 
                                        session.addMessageHandler(new MessageHandler.Whole<String>() {
+
+                                           AtomicLong messageCounter = new AtomicLong();
+
                                            @Override
                                            public void onMessage(String message) {
                                                try {
@@ -62,8 +70,13 @@ public class PoloniexWsClient {
                                                    if(messageConsumer!=null) {
                                                        messageConsumer.consume(messages);
                                                    }
-                                               } catch (IOException e) {
 
+                                                   long numberOfMessages = messageCounter.incrementAndGet();
+                                                   if(numberOfMessages % 100 == 0){
+                                                       logger.info("Consumed messages from poloniex: "+numberOfMessages);
+                                                   }
+                                               } catch (IOException e) {
+                                                   logger.error("Error consuming messages: "+e.getMessage());
                                                }
                                            }
                                        });

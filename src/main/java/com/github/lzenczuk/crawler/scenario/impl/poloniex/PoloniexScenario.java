@@ -9,8 +9,6 @@ import com.github.lzenczuk.crawler.scenario.Scenario;
 import com.github.lzenczuk.crawler.scenario.ScenarioExecutionResult;
 import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.PoloniexWsClient;
 import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.consumer.MessageConsumer;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.consumer.MessageConsumerException;
-import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.consumer.file.FileMessageConsumerImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +19,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * Created by dev on 18/07/16.
@@ -55,32 +52,20 @@ public class PoloniexScenario implements Scenario {
         httpCrawlerClient.process(initialRequest).thenAccept(httpCrawlerResponse -> {
 
             if(httpCrawlerResponse.isError()){
+                logger.info("Error fetching tickets from poloniex");
                 resultFuture.complete(new ScenarioExecutionResult(httpCrawlerResponse.getCrawlerError().getErrorMessage()));
+                return;
             }
 
             ObjectMapper objectMapper = new ObjectMapper();
 
-            logger.error("----------------> Content");
-            //logger.error(httpCrawlerResponse.getContent());
-
             try {
-                logger.error("------------> Map");
-
                 TypeReference<HashMap<String, MarketDTO>> marketsRef = new TypeReference<HashMap<String, MarketDTO>>() {};
 
                 HashMap<String, MarketDTO> marketsMapDTO = objectMapper.readValue(httpCrawlerResponse.getContent(), marketsRef);
-                logger.error("------------< Mapped");
-                //logger.error(marketsMapDTO);
 
                 Markets markets = new Markets();
-
                 marketsMapDTO.entrySet().forEach(entry -> markets.addMarket(entry.getKey(), entry.getValue().getId()));
-
-                logger.error(markets.getCurrencies());
-                logger.error(markets.getMarketsNames().size());
-                logger.error(markets.getFilteredMarketsNames("ETH"));
-                logger.error(markets.getFilteredMarketsNames("DAO"));
-                logger.error(markets.getMarketsNames().stream().filter(s -> !s.contains("_")).collect(Collectors.toList()));
 
                 PoloniexWsClient poloniexWsClient = new PoloniexWsClient(messageConsumer);
                 CompletableFuture<Void> stopFeature = poloniexWsClient.start();
@@ -89,7 +74,6 @@ public class PoloniexScenario implements Scenario {
 
                 stopFeature.join();
                 resultFuture.complete(new ScenarioExecutionResult());
-
 
             } catch (IOException e) {
                 logger.error("Error mapping.", e.getMessage());

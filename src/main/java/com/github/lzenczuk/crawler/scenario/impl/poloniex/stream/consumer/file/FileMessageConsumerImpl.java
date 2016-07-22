@@ -4,6 +4,8 @@ import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.Message;
 import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.consumer.MessageConsumer;
 import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.consumer.MessageConsumerException;
 import com.github.lzenczuk.crawler.scenario.impl.poloniex.stream.json.JsonMessageMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,18 +14,18 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Created by dev on 20/07/16.
  */
 public class FileMessageConsumerImpl implements MessageConsumer{
 
+    private static final Logger logger = LogManager.getLogger(FileMessageConsumerImpl.class);
+
     private final String dataFileName;
     private final JsonMessageMapper jsonMessageMapper;
     private OutputStream fileOutputStream;
-    private ZipOutputStream zipOutputStream;
+
     private final AtomicBoolean closed = new AtomicBoolean(true);
 
     public FileMessageConsumerImpl(String dataFileName) throws MessageConsumerException {
@@ -35,15 +37,7 @@ public class FileMessageConsumerImpl implements MessageConsumer{
         this.jsonMessageMapper = jsonMessageMapper;
 
         try {
-
-            /*zipOutputStream = new ZipOutputStream(new FileOutputStream(dataFileName));
-            zipOutputStream.putNextEntry(new ZipEntry("data.json"));
-            zipOutputStream.setLevel(9);
-
-            fileOutputStream = zipOutputStream;*/
-
             fileOutputStream = new GZIPOutputStream(new FileOutputStream(dataFileName));
-
             closed.set(false);
 
         } catch (FileNotFoundException e) {
@@ -76,7 +70,7 @@ public class FileMessageConsumerImpl implements MessageConsumer{
 
     public void close() throws IOException {
         closed.set(true);
-        System.out.println("--------------> zip close");
+        logger.info("GZ file closed");
         fileOutputStream.close();
     }
 }
